@@ -1,41 +1,51 @@
 # Makefile for a Terraform project
 
+RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+$(eval $(RUN_ARGS):;@:)
+
+
 # Default target
 all: init plan
 
 # Initialize Terraform
 init:
-	terraform init
+	@cd $(RUN_ARGS) && terraform init
 
 # Format Terraform files
 fmt:
-	terraform fmt
+	@cd $(RUN_ARGS) && terraform fmt
 
 # Validate Terraform files
 validate:
-	terraform validate
+	@cd $(RUN_ARGS) && terraform validate
 
 # Plan Terraform deployment
 plan:
-	terraform plan -out ./plan.out
+	@cd $(RUN_ARGS) && terraform plan -out ./plan.out
 
 # Apply Terraform deployment
 apply:
-	terraform apply ./plan.out
+	@cd $(RUN_ARGS) && terraform apply ./plan.out
 
 # Destroy Terraform managed infrastructure
-destroy:
-	terraform destroy -auto-approve
+destroytf:
+	@cd $(RUN_ARGS) && terraform destroy -auto-approve
+
+remove:
+	@cd ./destroy && terraform plan -out ./plan.out && terraform apply -auto-approve "./plan.out"
+
+clean:
+	@cd $(RUN_ARGS) && rm -f ./plan.out ./terraform.tfstate ./terraform.tfstate.backup
 
 # Output Terraform managed infrastructure
 output:
-	terraform output
+	@cd $(RUN_ARGS) && terraform output
 
 getip:
-	./scripts/get_ip.sh $(filter-out $@,$(MAKECMDGOALS))
+	./lxc-base/scripts/get_ip.sh $(RUN_ARGS)
 
 help:
-	@echo "Usage: make [target]"
+	@echo "Usage: make [target] [dir]"
 	@echo ""
 	@echo "Targets:"
 	@echo "  all        Initialize, format, validate, plan, and apply Terraform"
@@ -52,4 +62,4 @@ help:
 %:
 	@:
 
-.PHONY: all init fmt validate plan apply destroy output
+.PHONY: all init fmt validate plan apply destroy output getip help clean remove destroytf %

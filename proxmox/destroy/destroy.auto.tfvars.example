@@ -1,0 +1,6 @@
+PM_API_URL = "https://192.168.0.191:8006/api2/json"
+PM_HOST = "192.168.0.191"
+PM_USER = "terraform@pam!terraform_token_id"
+PM_KEY = ""
+target_node = "dragon"
+pub_ssh_key = "id_rsa.pub"
