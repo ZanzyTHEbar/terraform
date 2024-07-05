@@ -68,6 +68,8 @@ else
     echo "SSH traffic is now allowed"
 fi
 
+systemd-tmpfiles --create
+
 systemctl restart sshd.service
 '
 EOF

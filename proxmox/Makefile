@@ -31,6 +31,9 @@ destroy:
 output:
 	terraform output
 
+getip:
+	./scripts/get_ip.sh $(filter-out $@,$(MAKECMDGOALS))
+
 help:
 	@echo "Usage: make [target]"
 	@echo ""
@@ -43,6 +46,10 @@ help:
 	@echo "  apply      Apply Terraform deployment"
 	@echo "  destroy    Destroy Terraform managed infrastructure"
 	@echo "  output     Output Terraform managed infrastructure"
+	@echo "  getip      Get IP address of a container - Usage: make getip <node/lcx/id> <host ip>"
 	@echo "  help       Display this help message"
+
+%:
+	@:
 
 .PHONY: all init fmt validate plan apply destroy output
